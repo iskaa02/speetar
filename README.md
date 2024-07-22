@@ -3,9 +3,10 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ## Get started
 
 1. Clone the repo
-```bash
-git clone https://github.com/iskaa02/speetar && cd speetar
-```
+
+   ```bash
+   git clone https://github.com/iskaa02/speetar && cd speetar
+   ```
 2. Install dependencies
 
    ```bash
