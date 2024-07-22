@@ -3,21 +3,19 @@ import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Location, Place, PlacesArray } from "@/hooks/useNearbyPlaces";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRef } from "react";
-import OpenInGoogleMapButton from "./OpenInGoogleMapsButton";
+import { calculateDistance } from "@/utils/calcDistance";
 type MainSheetProps = {
   places: PlacesArray;
   onPlacePress: (i: Place, index: number) => void;
   selectedPlaceIndex: number | null;
+  userLocation: Location;
 };
 export default function MainSheet({
   places,
   onPlacePress,
   selectedPlaceIndex,
+  userLocation,
 }: MainSheetProps) {
-  const myLoc = {
-    longitude: 21.75867,
-    latitude: 32.762939,
-  };
   const ref = useRef<BottomSheet>(null);
 
   return (
@@ -63,7 +61,7 @@ export default function MainSheet({
                   />
                   <Text
                     style={styles.distance}
-                  >{`${calculateDistance(v.location, myLoc).toFixed(1)} كم`}</Text>
+                  >{`${calculateDistance(v.location, userLocation).toFixed(1)} كم`}</Text>
                 </View>
               </View>
               <View style={styles.ratingContainer}>
@@ -118,26 +116,3 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 });
-function calculateDistance(loc1: Location, loc2: Location) {
-  const R = 6371; // Earth's radius in kilometers
-
-  const latRad1 = toRadians(loc1.latitude);
-  const latRad2 = toRadians(loc2.latitude);
-  const dLat = toRadians(loc2.latitude - loc1.latitude);
-  const dLon = toRadians(loc2.longitude - loc1.longitude);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(latRad1) *
-      Math.cos(latRad2) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return R * c;
-}
-
-function toRadians(degrees: number) {
-  return (degrees * Math.PI) / 180;
-}

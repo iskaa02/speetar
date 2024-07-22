@@ -7,7 +7,11 @@ import MapView, { Marker } from "react-native-maps";
 import * as ExpoLocation from "expo-location";
 import OpenInGoogleMapButton from "@/components/OpenInGoogleMapsButton";
 export default function HomePage() {
-  const [userLocation, setUserLocation] = React.useState<Location | null>(null);
+  // if user deny location permission user a default location ( Al bayda )
+  const [userLocation, setUserLocation] = React.useState<Location>({
+    longitude: 21.75867,
+    latitude: 32.762939,
+  });
   const [selectedPlaceIndex, setSelectedPlaceIndex] = React.useState<
     number | null
   >(null);
@@ -30,28 +34,29 @@ export default function HomePage() {
           initialCamera={{
             zoom: 16,
             center: {
-              longitude: userLocation?.longitude ?? 21.75867,
-              latitude: userLocation?.latitude ?? 32.762939,
+              longitude: userLocation.longitude,
+              latitude: userLocation.latitude,
             },
             heading: 0,
             pitch: 0,
             altitude: 0,
           }}
         >
-          {typeof selectedPlaceIndex == "number" ? (
+          {selectedPlaceIndex !== null ? (
             <Marker coordinate={places.places[selectedPlaceIndex].location} />
           ) : null}
         </MapView>
 
         <OpenInGoogleMapButton
           selectedPlace={
-            typeof selectedPlaceIndex == "number"
+            selectedPlaceIndex !== null
               ? places.places[selectedPlaceIndex]
               : null
           }
         />
         <MainSheet
           selectedPlaceIndex={selectedPlaceIndex}
+          userLocation={userLocation}
           onPlacePress={(v, i) => {
             ref.current?.animateCamera({
               center: v.location,
